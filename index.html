@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f3ee">
+    <meta name="description" content="Explore the Grand Hall seating plan and select your tickets.">
+    <title>Grand Hall — Find your seat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Grand Hall">
+        <span class="brand-mark" aria-hidden="true">G</span>
+        <span class="brand-name">GRAND HALL<span class="brand-caption">THEATRE &amp; CONCERTS</span></span>
+      </a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a class="nav-link" href="#venue">The venue</a>
+        <a class="nav-link" href="#tickets">Tickets</a>
+      </nav>
+      <a class="header-action" href="#tickets">Your selection <span id="header-cart-count">0</span></a>
+    </header>
+
+    <main>
+      <section class="event-hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-rule"></span> A NIGHT AT THE GRAND HALL</p>
+          <h1 id="page-title">The best nights<br>stay with you<span>.</span></h1>
+          <p class="hero-description">Find your place in the room. Explore the seating plan, compare views and choose the seats that make the evening yours.</p>
+          <div class="event-meta">
+            <span><span class="meta-icon" aria-hidden="true">◷</span> Doors 7:00 PM · Performance 7:30 PM</span>
+            <span><span class="meta-icon pin-icon" aria-hidden="true">⌖</span> Grand Hall, Main Stage</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Illustration of the Grand Hall stage">
+          <div class="art-glow"></div>
+          <div class="art-curtain curtain-left"></div>
+          <div class="art-curtain curtain-right"></div>
+          <div class="art-proscenium"></div>
+          <div class="art-stage"></div>
+          <div class="art-light light-one"></div>
+          <div class="art-light light-two"></div>
+          <div class="art-caption"><span>THE GRAND HALL</span><span>EST. 1928</span></div>
+        </div>
+      </section>
+
+      <section class="booking-shell" id="venue" aria-label="Choose your seats">
+        <div class="booking-main">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">01 / THE AUDITORIUM</p>
+              <h2>Choose your view</h2>
+            </div>
+            <p class="seat-count" id="seat-count">Loading seating plan…</p>
+          </div>
+
+          <div class="map-toolbar">
+            <div class="seat-legend" aria-label="Seat availability legend">
+              <span><i class="legend-swatch available" aria-hidden="true"></i>Available</span>
+              <span><i class="legend-swatch inspected" aria-hidden="true"></i>Inspected</span>
+              <span><i class="legend-swatch in-cart" aria-hidden="true"></i>In your cart</span>
+              <span><i class="legend-swatch unavailable" aria-hidden="true"></i>Unavailable</span>
+            </div>
+            <div class="map-controls">
+              <div class="pan-controls" role="group" aria-label="Move the venue map">
+                <button class="map-control pan-up" type="button" data-pan="up" aria-label="Move map up" title="Move up">↑</button>
+                <button class="map-control pan-left" type="button" data-pan="left" aria-label="Move map left" title="Move left">←</button>
+                <button class="map-control reset-control" id="reset-view" type="button" aria-label="Reset and center map">Center</button>
+                <button class="map-control pan-right" type="button" data-pan="right" aria-label="Move map right" title="Move right">→</button>
+                <button class="map-control pan-down" type="button" data-pan="down" aria-label="Move map down" title="Move down">↓</button>
+              </div>
+              <span class="control-divider" aria-hidden="true"></span>
+              <div class="zoom-controls" role="group" aria-label="Zoom the venue map">
+                <button class="map-control zoom-control" id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+                <span class="zoom-level" id="zoom-level" aria-live="polite">100%</span>
+                <button class="map-control zoom-control" id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-viewport" id="map-viewport" aria-label="Interactive seating map. Use the controls to move and zoom.">
+            <div class="venue-map" id="venue-map">
+              <div class="stage">
+                <span class="stage-kicker">THE STAGE</span>
+                <span class="stage-name">GRAND HALL</span>
+                <span class="stage-line"></span>
+              </div>
+              <div class="seating-area" id="seating-area"></div>
+              <div class="map-front-label"><span>←</span> FRONT OF HOUSE <span>→</span></div>
+            </div>
+          </div>
+          <div class="section-prices" id="section-prices" aria-label="Section ticket prices"></div>
+          <p class="map-help">Select a seat to see its details. Your ticket is only added when you choose “Add to cart”.</p>
+        </div>
+
+        <aside class="booking-sidebar" id="tickets" aria-label="Seat details and cart">
+          <div class="selection-section">
+            <p class="eyebrow">02 / YOUR SEAT</p>
+            <h2>Seat details</h2>
+            <div class="selection-empty" id="selection-empty" aria-live="polite">
+              <span class="empty-seat-icon" aria-hidden="true">✳</span>
+              <p>Choose any available seat on the map to see its section, row and price.</p>
+            </div>
+            <div class="selection-details" id="selection-details" hidden>
+              <div class="selected-seat-heading">
+                <span class="selected-seat-icon" aria-hidden="true">✳</span>
+                <div>
+                  <span class="selected-section-name" id="detail-section">—</span>
+                  <strong class="selected-seat-name" id="detail-seat">—</strong>
+                </div>
+              </div>
+              <div class="detail-line"><span>Ticket price</span><strong id="detail-price">—</strong></div>
+              <div class="detail-line"><span>Availability</span><strong id="detail-status">—</strong></div>
+            </div>
+            <button class="add-button" id="add-to-cart" type="button" disabled>
+              <span>Add to cart</span><span class="button-arrow" aria-hidden="true">↗</span>
+            </button>
+            <p class="selection-note" id="selection-hint">No ticket is reserved until it is added to your cart.</p>
+          </div>
+
+          <div class="cart-section">
+            <div class="cart-heading">
+              <div>
+                <p class="eyebrow">03 / YOUR EVENING</p>
+                <h2>Your tickets <span class="cart-count" id="cart-count">0</span></h2>
+              </div>
+            </div>
+            <p class="cart-empty" id="cart-empty">Your cart is waiting for its first seat.</p>
+            <ul class="cart-list" id="cart-list" aria-label="Tickets in your cart"></ul>
+            <div class="cart-total">
+              <span>Total</span>
+              <strong id="cart-total">$0</strong>
+            </div>
+            <p class="cart-note">Ticket selection only · No payment required</p>
+          </div>
+          <p class="storage-notice" id="storage-notice" role="status" hidden></p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="#"><span class="brand-mark small" aria-hidden="true">G</span> GRAND HALL</a>
+      <span>A room for every story.</span>
+      <span>Seat selection experience</span>
+    </footer>
+    <div class="sr-only" id="live-message" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
