@@ -472,6 +472,7 @@ h2 {
 .map-control:disabled {
   color: #c4c6bf;
   cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .map-control.reset-control {

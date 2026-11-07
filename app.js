@@ -43,6 +43,12 @@ const zoomLevel = document.querySelector("#zoom-level");
 const zoomInButton = document.querySelector("#zoom-in");
 const zoomOutButton = document.querySelector("#zoom-out");
 const resetButton = document.querySelector("#reset-view");
+const panButtons = {
+  up: document.querySelector('[data-pan="up"]'),
+  down: document.querySelector('[data-pan="down"]'),
+  left: document.querySelector('[data-pan="left"]'),
+  right: document.querySelector('[data-pan="right"]'),
+};
 
 const seatsById = new Map();
 let savedCartNeedsCleanup = false;
@@ -397,18 +403,27 @@ function clamp(value, min, max) {
 }
 
 function updateMapTransform() {
-  const maxX = Math.max(0, (map.offsetWidth * mapScale - viewport.clientWidth) / 2 + 18);
-  const maxY = Math.max(0, (map.offsetHeight * mapScale - viewport.clientHeight) / 2 + 18);
+  const maxX = Math.max(0, (map.offsetWidth * mapScale - viewport.clientWidth) / 2);
+  const maxY = Math.max(0, (map.offsetHeight * mapScale - viewport.clientHeight) / 2);
   mapX = clamp(mapX, -maxX, maxX);
   mapY = clamp(mapY, -maxY, maxY);
   map.style.transform = `translate(-50%, -50%) translate(${mapX}px, ${mapY}px) scale(${mapScale})`;
   zoomLevel.textContent = `${Math.round(mapScale * 100)}%`;
   zoomInButton.disabled = mapScale >= 1.6;
   zoomOutButton.disabled = mapScale <= 0.8;
+  panButtons.up.disabled = mapY >= maxY;
+  panButtons.down.disabled = mapY <= -maxY;
+  panButtons.left.disabled = mapX >= maxX;
+  panButtons.right.disabled = mapX <= -maxX;
+  resetButton.disabled = mapScale === 1 && mapX === 0 && mapY === 0;
 }
 
 function zoomMap(amount) {
-  mapScale = clamp(Math.round((mapScale + amount) * 10) / 10, 0.8, 1.6);
+  const nextScale = clamp(Math.round((mapScale + amount) * 10) / 10, 0.8, 1.6);
+  if (nextScale === mapScale) {
+    return;
+  }
+  mapScale = nextScale;
   updateMapTransform();
 }
 
@@ -476,6 +491,9 @@ document.querySelectorAll("[data-pan]").forEach((button) => {
 
 viewport.addEventListener("wheel", (event) => {
   event.preventDefault();
+  if (event.deltaY === 0) {
+    return;
+  }
   zoomMap(event.deltaY < 0 ? 0.1 : -0.1);
 }, { passive: false });
 viewport.addEventListener("pointerdown", startMapDrag);
