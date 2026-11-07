@@ -35,6 +35,7 @@ const cartEmpty = document.querySelector("#cart-empty");
 const cartCount = document.querySelector("#cart-count");
 const headerCartCount = document.querySelector("#header-cart-count");
 const cartTotal = document.querySelector("#cart-total");
+const cartTitle = document.querySelector("#cart-title");
 const liveMessage = document.querySelector("#live-message");
 const storageNotice = document.querySelector("#storage-notice");
 const viewport = document.querySelector("#map-viewport");
@@ -274,22 +275,37 @@ function addInspectedSeat() {
   renderCart();
   updateSeatElement(seat.id);
   inspectSeat(seat.id);
-  liveMessage.textContent = `Row ${seat.row}, seat ${seat.number} added to your cart.`;
+  liveMessage.textContent = `Row ${seat.row}, seat ${seat.number} added. ${cartSummary()}`;
 }
 
 function removeTicket(seatId) {
   const seat = getSeatData(seatId);
-  if (!seat || !cart.delete(seatId)) {
+  const cartBeforeRemoval = [...cart];
+  const removedIndex = cartBeforeRemoval.indexOf(seatId);
+  if (!seat || removedIndex === -1 || !cart.delete(seatId)) {
     return;
   }
 
+  const remainingSeatIds = [...cart];
+  const nextSeatId = remainingSeatIds[Math.min(removedIndex, remainingSeatIds.length - 1)];
   persistCart();
   renderCart();
   updateSeatElement(seatId);
   if (inspectedSeatId === seatId) {
     inspectSeat(seatId);
   }
-  liveMessage.textContent = `Row ${seat.row}, seat ${seat.number} removed from your cart.`;
+  if (nextSeatId) {
+    cartList.querySelector(`[data-seat-id="${CSS.escape(nextSeatId)}"]`)?.focus();
+  } else {
+    cartTitle.focus();
+  }
+  liveMessage.textContent = `Row ${seat.row}, seat ${seat.number} removed. ${cartSummary()}`;
+}
+
+function cartSummary() {
+  const total = [...cart].reduce((sum, seatId) => sum + (seatsById.get(seatId)?.section.price ?? 0), 0);
+  const count = cart.size;
+  return `${count} ${count === 1 ? "ticket" : "tickets"} in your cart. Total ${formatPrice(total)}.`;
 }
 
 function renderCart() {
@@ -324,6 +340,7 @@ function renderCart() {
     const removeButton = document.createElement("button");
     removeButton.className = "remove-ticket";
     removeButton.type = "button";
+    removeButton.dataset.seatId = seat.id;
     removeButton.setAttribute("aria-label", `Remove ${seat.section.name}, row ${seat.row}, seat ${seat.number}`);
     removeButton.textContent = "×";
     removeButton.addEventListener("click", () => removeTicket(seat.id));
@@ -335,7 +352,9 @@ function renderCart() {
 
   const count = cart.size;
   cartCount.textContent = String(count);
+  cartCount.setAttribute("aria-label", `${count} ${count === 1 ? "ticket" : "tickets"} selected`);
   headerCartCount.textContent = String(count);
+  headerCartCount.setAttribute("aria-label", `${count} ${count === 1 ? "ticket" : "tickets"} in cart`);
   cartTotal.textContent = formatPrice(total);
   cartEmpty.hidden = count > 0;
   cartList.hidden = count === 0;
@@ -394,7 +413,7 @@ function restoreCart() {
   }
   renderCart();
   if (cart.size > 0) {
-    liveMessage.textContent = `${cart.size} saved ${cart.size === 1 ? "ticket has" : "tickets have"} been restored from your last visit.`;
+    liveMessage.textContent = `${cart.size} saved ${cart.size === 1 ? "ticket has" : "tickets have"} been restored. ${cartSummary()}`;
   }
 }
 
