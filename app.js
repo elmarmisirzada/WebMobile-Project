@@ -45,6 +45,7 @@ const zoomOutButton = document.querySelector("#zoom-out");
 const resetButton = document.querySelector("#reset-view");
 
 const seatsById = new Map();
+let savedCartNeedsCleanup = false;
 const cart = new Set(loadCart());
 let inspectedSeatId = null;
 let mapScale = 1;
@@ -349,7 +350,9 @@ function loadCart() {
     if (!Array.isArray(value)) {
       throw new TypeError("Saved cart data is not a list.");
     }
-    return [...new Set(value.filter((seatId) => typeof seatId === "string"))];
+    const seatIds = value.filter((seatId) => typeof seatId === "string");
+    savedCartNeedsCleanup = seatIds.length !== value.length || new Set(seatIds).size !== seatIds.length;
+    return seatIds;
   } catch (error) {
     console.warn("The saved ticket cart could not be read.", error);
     showStorageNotice("Your saved cart could not be read. You can still select seats for this visit.");
@@ -373,10 +376,15 @@ function showStorageNotice(message) {
 }
 
 function restoreCart() {
+  let cartChanged = savedCartNeedsCleanup;
   for (const seatId of [...cart]) {
     if (!seatsById.has(seatId) || venue.unavailableSeats.has(seatId)) {
       cart.delete(seatId);
+      cartChanged = true;
     }
+  }
+  if (cartChanged) {
+    persistCart();
   }
   renderCart();
   if (cart.size > 0) {
