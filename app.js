@@ -80,15 +80,54 @@ function createSeat(section, rowIndex, seatIndex) {
   seat.className = "seat available";
   seat.type = "button";
   seat.dataset.seatId = id;
+  seat.tabIndex = rowIndex === 0 && seatIndex === 0 ? 0 : -1;
   seat.setAttribute("aria-pressed", "false");
   seat.addEventListener("click", () => {
     if (Date.now() >= suppressSeatClickUntil) {
       inspectSeat(id);
     }
   });
+  seat.addEventListener("focus", () => setSectionTabStop(seat));
+  seat.addEventListener("keydown", (event) => moveSeatFocus(event, seat));
   seatsById.set(id, { id, row, number, section, element: seat });
   updateSeatElement(id);
   return seat;
+}
+
+function setSectionTabStop(seat) {
+  const section = seat.closest(".seat-section");
+  section.querySelectorAll(".seat").forEach((sectionSeat) => {
+    sectionSeat.tabIndex = sectionSeat === seat ? 0 : -1;
+  });
+}
+
+function moveSeatFocus(event, seat) {
+  const row = seat.closest(".seat-row");
+  const section = seat.closest(".seat-section");
+  const rowSeats = [...row.querySelectorAll(".seat")];
+  const seatIndex = rowSeats.indexOf(seat);
+  let target = null;
+
+  if (event.key === "ArrowLeft") {
+    target = rowSeats[seatIndex - 1];
+  } else if (event.key === "ArrowRight") {
+    target = rowSeats[seatIndex + 1];
+  } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+    const rows = [...section.querySelectorAll(".seat-row")];
+    const rowIndex = rows.indexOf(row);
+    const nextRow = rows[rowIndex + (event.key === "ArrowUp" ? -1 : 1)];
+    const nextRowSeats = nextRow ? [...nextRow.querySelectorAll(".seat")] : [];
+    target = nextRowSeats[Math.min(seatIndex, nextRowSeats.length - 1)] ?? null;
+  } else if (event.key === "Home") {
+    target = rowSeats[0];
+  } else if (event.key === "End") {
+    target = rowSeats[rowSeats.length - 1];
+  } else {
+    return;
+  }
+
+  event.preventDefault();
+  target?.focus();
 }
 
 function renderVenue() {
