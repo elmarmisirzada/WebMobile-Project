@@ -24,10 +24,11 @@ Seat buttons are created from the section data in `app.js`. Selecting a seat dis
 - Inspect available, unavailable and in-cart seats.
 - Navigate seats with Tab, the arrow keys, Home and End; press Enter or Space to inspect.
 - Pan and zoom the seating map with the on-screen controls; reset it to the centered view. Controls stop at the map edges and zoom is limited to 80%–160%.
-- Use the mouse wheel to zoom and drag empty map space to pan.
+- Use the mouse wheel to zoom and drag empty map space with a mouse or touch to pan.
 - Add and remove tickets, prevent duplicate seat entries and calculate the cart total.
 - Hear seat and cart updates announced to assistive technology; keyboard focus moves to a remaining ticket after removal.
 - Save the cart in `localStorage` and restore valid selections after reloading the page. Invalid, duplicate and unavailable seat IDs in saved data are discarded.
+- Keep cart contents and seat states synchronized across multiple open tabs.
 - Use the interface at desktop, tablet and mobile widths.
 
 ## Verification checklist
@@ -37,7 +38,8 @@ Seat buttons are created from the section data in `app.js`. Selecting a seat dis
 - Add seats from multiple sections, remove one and confirm the map state and total update.
 - Reload and confirm the remaining tickets and in-cart seat states are restored.
 - Try malformed, duplicate, unavailable and unknown seat IDs in the saved cart; confirm only valid selections are restored.
-- Try all four pan controls, both zoom controls, center/reset, mouse-wheel zoom and drag panning; verify movement and zoom limits.
-- Navigate the seat map by keyboard and check the cart updates at desktop, tablet and mobile widths.
+- Try all four pan controls, both zoom controls, center/reset, mouse-wheel zoom, mouse drag and touch drag; verify movement and zoom limits.
+- Navigate the seat map by keyboard and check the cart updates at desktop, tablet and mobile widths without horizontal page overflow.
+- Open two tabs and confirm ticket additions and removals update the cart, total and seat states in both.
 
 The project is a front-end demonstration. It does not reserve seats with a server, process payments or provide real-time availability.
