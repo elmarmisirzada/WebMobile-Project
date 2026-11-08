@@ -515,7 +515,7 @@ h2 {
   background-image: radial-gradient(#dfddd5 0.75px, transparent 0.75px);
   background-position: 8px 8px;
   background-size: 17px 17px;
-  touch-action: pan-y;
+  touch-action: none;
   cursor: grab;
 }
 

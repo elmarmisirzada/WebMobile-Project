@@ -463,7 +463,7 @@ function resetMap() {
 }
 
 function startMapDrag(event) {
-  if (event.pointerType !== "mouse" || event.button !== 0 || event.target.closest("button")) {
+  if (!["mouse", "touch"].includes(event.pointerType) || event.button !== 0 || event.target.closest("button")) {
     return;
   }
   dragState = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, mapX, mapY, moved: false };
