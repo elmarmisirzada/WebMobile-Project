@@ -417,6 +417,42 @@ function restoreCart() {
   }
 }
 
+function syncCartFromStorage(event) {
+  if (event.key !== storageKey) {
+    return;
+  }
+
+  let savedSeatIds;
+  try {
+    const value = event.newValue === null ? [] : JSON.parse(event.newValue);
+    if (!Array.isArray(value)) {
+      throw new TypeError("Saved cart data is not a list.");
+    }
+    savedSeatIds = [...new Set(value.filter((seatId) => typeof seatId === "string"))];
+  } catch (error) {
+    console.warn("The updated ticket cart could not be read.", error);
+    showStorageNotice("The cart was changed in another tab, but its saved data could not be read.");
+    return;
+  }
+
+  cart.clear();
+  for (const seatId of savedSeatIds) {
+    if (seatsById.has(seatId) && !venue.unavailableSeats.has(seatId)) {
+      cart.add(seatId);
+    }
+  }
+
+  renderCart();
+  for (const seatId of seatsById.keys()) {
+    updateSeatElement(seatId);
+  }
+  if (inspectedSeatId) {
+    inspectSeat(inspectedSeatId);
+  }
+  storageNotice.hidden = true;
+  liveMessage.textContent = `Your cart was updated in another tab. ${cartSummary()}`;
+}
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -520,3 +556,4 @@ viewport.addEventListener("pointermove", moveMapDrag);
 viewport.addEventListener("pointerup", endMapDrag);
 viewport.addEventListener("pointercancel", endMapDrag);
 window.addEventListener("resize", updateMapTransform);
+window.addEventListener("storage", syncCartFromStorage);
