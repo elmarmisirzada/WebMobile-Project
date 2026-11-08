@@ -208,10 +208,11 @@ function inspectSeat(seatId) {
     return;
   }
 
-  if (inspectedSeatId) {
-    updateSeatElement(inspectedSeatId);
-  }
+  const previousSeatId = inspectedSeatId;
   inspectedSeatId = seatId;
+  if (previousSeatId && previousSeatId !== seatId) {
+    updateSeatElement(previousSeatId);
+  }
   updateSeatElement(seatId);
 
   selectionEmpty.hidden = true;

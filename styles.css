@@ -399,8 +399,8 @@ h2 {
 }
 
 .legend-swatch.inspected {
-  border-color: #b57d3d;
-  background: #dfb475;
+  border-color: #1d4f94;
+  background: #3b7dd8;
 }
 
 .legend-swatch.in-cart {
@@ -692,16 +692,6 @@ h2 {
   transform: translateY(-2px);
 }
 
-.seat.selected {
-  border-color: #a36c32;
-  background: #e4b979;
-  box-shadow: 0 0 0 2px #c28d5033;
-}
-
-.seat.selected::after {
-  background: #714820;
-}
-
 .seat.in-cart {
   border-color: #274536;
   background: #3e6651;
@@ -751,6 +741,24 @@ h2 {
 .seat-section[data-category="balcony"] .seat.available:focus-visible {
   border-color: #615b83;
   background: #b8b2cd;
+}
+
+/* Inspected seat: placed after the section colours so it wins in every section. */
+.seat.selected {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563b8;
+}
+
+.seat.available.selected,
+.seat-section[data-category] .seat.available.selected {
+  border-color: #1d4f94;
+  background: #3b7dd8;
+  transform: translateY(-2px);
+}
+
+.seat.available.selected::after,
+.seat-section[data-category] .seat.available.selected::after {
+  background: #e8f0fb;
+  opacity: 0.8;
 }
 
 .map-front-label {
@@ -984,6 +992,7 @@ h2 {
   line-height: 1.5;
   text-align: center;
 }
+
 
 .cart-count {
   min-width: 20px;
