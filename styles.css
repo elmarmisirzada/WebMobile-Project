@@ -1308,7 +1308,7 @@ h2 {
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 860px) {
   .site-header {
     height: 68px;
     padding: 0 5vw;
@@ -1507,6 +1507,31 @@ h2 {
   .footer-bottom {
     min-height: 43px;
     font-size: 7px;
+  }
+}
+
+@media (max-width: 860px) {
+  .map-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .map-controls {
+    align-self: flex-start;
+  }
+
+  .venue-map {
+    min-width: 840px;
+  }
+
+  .seat {
+    width: 24px;
+    height: 24px;
+  }
+
+  .seat::after {
+    width: 9px;
+    margin-top: 17px;
   }
 }
 
